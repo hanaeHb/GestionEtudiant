@@ -24,7 +24,7 @@ import java.util.List;
                 version = "1.0.0"
         ),
         servers = @Server(
-                url = "http://localhost:8082"
+                url = "http://localhost:8083"
         )
 )
 @RestController
