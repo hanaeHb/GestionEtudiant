@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,6 +59,7 @@ public class ApiRestfullEtudiant {
             }
     )
 
+    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @PostMapping
     public ResponseEntity<ResponceEtudiantDto> add(@RequestBody RequestEtudiantDto requestEtudiantDto) {
         ResponceEtudiantDto responceEtudiantDto = etudiantService.AddEtudiant(requestEtudiantDto);
@@ -79,6 +81,7 @@ public class ApiRestfullEtudiant {
             }
     )
 
+    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @GetMapping
     public ResponseEntity<List<ResponceEtudiantDto>> getAll() {
 
@@ -100,6 +103,7 @@ public class ApiRestfullEtudiant {
                     @ApiResponse(responseCode = "5xx",description = "erreur serveur"),
             }
     )
+    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ResponceEtudiantDto> getEtudiantByID(@PathVariable Integer id) {
         ResponceEtudiantDto responceEtudiantDto = etudiantService.GETEtudiantById(id);
@@ -129,6 +133,7 @@ public class ApiRestfullEtudiant {
             }
     )
 
+    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ResponceEtudiantDto> update(@PathVariable Integer id,
                                                       @RequestBody RequestEtudiantDto requestEtudiantDto) {
@@ -146,6 +151,7 @@ public class ApiRestfullEtudiant {
             }
     )
 
+    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Integer id) {
         etudiantService.DELETEEtudiantBYID(id);
