@@ -59,35 +59,47 @@ public class ApiRestfullEtudiant {
             }
     )
 
-    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
     @PostMapping
-    public ResponseEntity<ResponceEtudiantDto> add(@RequestBody RequestEtudiantDto requestEtudiantDto) {
-        ResponceEtudiantDto responceEtudiantDto = etudiantService.AddEtudiant(requestEtudiantDto);
-        return ResponseEntity.ok(responceEtudiantDto);
+    public ResponseEntity<ResponceEtudiantDto> addEtudiant(@RequestBody RequestEtudiantDto dto) {
+        return ResponseEntity.ok(etudiantService.AddEtudiant(dto));
     }
 
     @Operation(
-            summary = " récuperer liste des etudiants",
-
+            summary = "Récupérer la liste complète des étudiants",
+            description = "Cette API retourne tous les étudiants enregistrés dans le système, " +
+                    "y compris les informations sur la filière associée à chaque étudiant.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "bien enregiter",
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Liste des étudiants récupérée avec succès",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = ResponceEtudiantDto.class ))
+                                    array = @ArraySchema(schema = @Schema(implementation = ResponceEtudiantDto.class))
                             )
                     ),
-                    @ApiResponse(responseCode = "4xx",description = "erreur client"),
-                    @ApiResponse(responseCode = "5xx",description = "erreur serveur"),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Non autorisé : JWT manquant ou invalide"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Accès interdit : l'utilisateur n'a pas les droits suffisants"
+                    ),
+                    @ApiResponse(
+                            responseCode = "5xx",
+                            description = "Erreur serveur"
+                    )
             }
     )
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN','SCOPE_USER')")
 
-    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ResponceEtudiantDto>> getAll() {
-
-        List<ResponceEtudiantDto> etudiantDTOS = etudiantService.GETALLEtudiants();
-        return ResponseEntity.ok(etudiantDTOS);
+    public ResponseEntity<List<ResponceEtudiantDto>> getAllEtudiants() {
+        return ResponseEntity.ok(etudiantService.GETALLEtudiants());
     }
+
 
     @Operation(
             summary = " récupérer etudiant par Id",
@@ -103,11 +115,11 @@ public class ApiRestfullEtudiant {
                     @ApiResponse(responseCode = "5xx",description = "erreur serveur"),
             }
     )
-    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN','SCOPE_USER')")
+
     @GetMapping("/{id}")
-    public ResponseEntity<ResponceEtudiantDto> getEtudiantByID(@PathVariable Integer id) {
-        ResponceEtudiantDto responceEtudiantDto = etudiantService.GETEtudiantById(id);
-        return ResponseEntity.ok(responceEtudiantDto);
+    public ResponseEntity<ResponceEtudiantDto> getEtudiantById(@PathVariable Integer id) {
+        return ResponseEntity.ok(etudiantService.GETEtudiantById(id));
     }
 
     @Operation(
@@ -133,12 +145,11 @@ public class ApiRestfullEtudiant {
             }
     )
 
-    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
     @PutMapping("/{id}")
-    public ResponseEntity<ResponceEtudiantDto> update(@PathVariable Integer id,
-                                                      @RequestBody RequestEtudiantDto requestEtudiantDto) {
-        ResponceEtudiantDto responceEtudiantDto = etudiantService.UPDATEEtudiant(id, requestEtudiantDto);
-        return ResponseEntity.ok(responceEtudiantDto);
+    public ResponseEntity<ResponceEtudiantDto> updateEtudiant(@PathVariable Integer id, @RequestBody RequestEtudiantDto dto) {
+        return ResponseEntity.ok(etudiantService.UPDATEEtudiant(id, dto));
     }
 
     @Operation(
@@ -151,10 +162,11 @@ public class ApiRestfullEtudiant {
             }
     )
 
-    @PreAuthorize("hasAuthority('SCOPE _ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteEtudiant(@PathVariable Integer id) {
         etudiantService.DELETEEtudiantBYID(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
